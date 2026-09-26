@@ -7,6 +7,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import * as productService from '../services/productService';
+import ProductImageGallery from '../components/ProductImageGallery';
 
 function extractError(err) {
   const data = err?.response?.data;
@@ -95,39 +96,19 @@ export default function ProductDetailPage() {
 
         <Divider sx={{ my: 2 }} />
 
+        <ProductImageGallery
+          images={product.galleryImages}
+          productName={product.productName}
+        />
+
+        <Divider sx={{ my: 2 }} />
+
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
           Description
         </Typography>
         <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
           {product.description}
         </Typography>
-
-        {product.galleryImages?.length > 0 && (
-          <>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-              Gallery Images
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={2} mt={1}>
-              {product.galleryImages.map((url, i) => (
-                <Box
-                  key={i}
-                  component="img"
-                  src={url}
-                  alt={`${product.productName} image ${i + 1}`}
-                  sx={{
-                    width: { xs: '100%', sm: 200 },
-                    height: 150,
-                    objectFit: 'cover',
-                    borderRadius: 1,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                />
-              ))}
-            </Stack>
-          </>
-        )}
       </Paper>
     </Box>
   );

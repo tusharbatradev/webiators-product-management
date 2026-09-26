@@ -45,7 +45,10 @@ Backend and frontend are fully implemented. Backend covers Express, MongoDB/Mong
 - Add product
 - Edit product
 - Delete product (with confirmation)
-- Product detail
+- Product detail with image gallery
+- Clickable image thumbnails
+- Previous/Next image navigation
+- Image fallback handling
 - Client-side form validation
 
 **Frontend (planned)**
@@ -271,6 +274,9 @@ The frontend uses JWT-based authentication backed by the Express API.
 - Successful edit redirects back to the product detail page.
 - Client-side validation mirrors backend rules: required fields, slug format, URL format for images, price/discounted-price relationship.
 - Backend validation errors are surfaced to the user in plain language.
+- Product detail displays a main image with Previous/Next navigation controls.
+- All gallery images are shown as clickable thumbnails; clicking a thumbnail makes it the main image.
+- Missing or broken gallery images are handled gracefully with a placeholder.
 
 ## Git Commit Convention
 
