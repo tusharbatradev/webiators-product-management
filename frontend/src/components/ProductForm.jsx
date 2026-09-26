@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import {
   Box, TextField, Button, Typography, Alert,
-  IconButton, Stack, CircularProgress,
+  IconButton, Stack, CircularProgress, Divider,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import RichTextEditor from './RichTextEditor';
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const URL_RE = /^https?:\/\/.+/;
 
-// Strip HTML tags and decode whitespace to check for meaningful text content.
 function hasText(html) {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0;
 }
@@ -66,12 +66,58 @@ const EMPTY = {
   description: '',
 };
 
+function SectionHeading({ children }) {
+  return (
+    <Typography
+      variant="caption"
+      fontWeight={700}
+      color="text.secondary"
+      sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', mb: 2 }}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+function ImagePreview({ src }) {
+  const [broken, setBroken] = useState(false);
+  const valid = src.trim() && URL_RE.test(src.trim());
+
+  return (
+    <Box
+      sx={{
+        width: 44,
+        height: 44,
+        borderRadius: 1.5,
+        overflow: 'hidden',
+        bgcolor: '#f1f5f9',
+        border: '1px solid #e2e8f0',
+        flexShrink: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {valid && !broken ? (
+        <Box
+          component="img"
+          src={src}
+          alt=""
+          onError={() => setBroken(true)}
+          sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      ) : (
+        <ImageOutlinedIcon sx={{ fontSize: 18, color: '#94a3b8' }} />
+      )}
+    </Box>
+  );
+}
+
 export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Save' }) {
   const [fields, setFields] = useState(() => ({
     ...EMPTY,
     ...initialValues,
-    galleryImages:
-      initialValues?.galleryImages?.length ? initialValues.galleryImages : [''],
+    galleryImages: initialValues?.galleryImages?.length ? initialValues.galleryImages : [''],
     price: initialValues?.price != null ? String(initialValues.price) : '',
     discountedPrice:
       initialValues?.discountedPrice != null ? String(initialValues.discountedPrice) : '',
@@ -80,8 +126,7 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
   const [apiError, setApiError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const set = (name, value) =>
-    setFields((prev) => ({ ...prev, [name]: value }));
+  const set = (name, value) => setFields((prev) => ({ ...prev, [name]: value }));
 
   const setImage = (i, value) =>
     setFields((prev) => {
@@ -114,7 +159,7 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
         productSlug: fields.productSlug.trim(),
         galleryImages: fields.galleryImages.map((u) => u.trim()).filter(Boolean),
         price: parseFloat(fields.price),
-        description: fields.description, // HTML string from CKEditor — do not trim
+        description: fields.description,
       };
       if (fields.discountedPrice !== '') {
         payload.discountedPrice = parseFloat(fields.discountedPrice);
@@ -130,61 +175,91 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate>
       {apiError && (
-        <Alert severity="error" sx={{ mb: 2 }} role="alert">
+        <Alert severity="error" sx={{ mb: 3 }} role="alert">
           {apiError}
         </Alert>
       )}
 
-      <TextField
-        label="Meta Title"
-        name="metaTitle"
-        value={fields.metaTitle}
-        onChange={(e) => set('metaTitle', e.target.value)}
-        fullWidth
-        required
-        margin="normal"
-        error={!!errors.metaTitle}
-        helperText={errors.metaTitle}
-        inputProps={{ maxLength: 100 }}
-      />
+      {/* Product Information */}
+      <SectionHeading>Product Information</SectionHeading>
+      <Stack spacing={2} sx={{ mb: 3 }}>
+        <TextField
+          label="Product Name"
+          name="productName"
+          value={fields.productName}
+          onChange={(e) => set('productName', e.target.value)}
+          fullWidth
+          required
+          error={!!errors.productName}
+          helperText={errors.productName}
+          inputProps={{ maxLength: 200 }}
+        />
+        <TextField
+          label="Meta Title"
+          name="metaTitle"
+          value={fields.metaTitle}
+          onChange={(e) => set('metaTitle', e.target.value)}
+          fullWidth
+          required
+          error={!!errors.metaTitle}
+          helperText={errors.metaTitle || 'Used for SEO — keep it under 100 characters.'}
+          inputProps={{ maxLength: 100 }}
+        />
+        <TextField
+          label="Product Slug"
+          name="productSlug"
+          value={fields.productSlug}
+          onChange={(e) => set('productSlug', e.target.value)}
+          fullWidth
+          required
+          error={!!errors.productSlug}
+          helperText={errors.productSlug || 'URL-friendly identifier, e.g. my-product-name'}
+        />
+      </Stack>
 
-      <TextField
-        label="Product Name"
-        name="productName"
-        value={fields.productName}
-        onChange={(e) => set('productName', e.target.value)}
-        fullWidth
-        required
-        margin="normal"
-        error={!!errors.productName}
-        helperText={errors.productName}
-        inputProps={{ maxLength: 200 }}
-      />
+      <Divider sx={{ mb: 3 }} />
 
-      <TextField
-        label="Product Slug"
-        name="productSlug"
-        value={fields.productSlug}
-        onChange={(e) => set('productSlug', e.target.value)}
-        fullWidth
-        required
-        margin="normal"
-        error={!!errors.productSlug}
-        helperText={errors.productSlug || 'e.g. my-product-name'}
-      />
+      {/* Pricing */}
+      <SectionHeading>Pricing</SectionHeading>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3 }}>
+        <TextField
+          label="Price (₹)"
+          name="price"
+          type="number"
+          value={fields.price}
+          onChange={(e) => set('price', e.target.value)}
+          fullWidth
+          required
+          error={!!errors.price}
+          helperText={errors.price}
+          inputProps={{ min: 0, step: 'any', 'aria-label': 'Price' }}
+        />
+        <TextField
+          label="Discounted Price (₹)"
+          name="discountedPrice"
+          type="number"
+          value={fields.discountedPrice}
+          onChange={(e) => set('discountedPrice', e.target.value)}
+          fullWidth
+          error={!!errors.discountedPrice}
+          helperText={errors.discountedPrice || 'Optional — must be less than price'}
+          inputProps={{ min: 0, step: 'any', 'aria-label': 'Discounted price' }}
+        />
+      </Stack>
 
-      <Box sx={{ mt: 2, mb: 1 }}>
-        <Typography variant="body2" fontWeight={500} gutterBottom>
-          Gallery Images *
-        </Typography>
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Media */}
+      <SectionHeading>Media</SectionHeading>
+      <Stack spacing={1.5} sx={{ mb: 1 }}>
         {fields.galleryImages.map((url, i) => (
-          <Stack key={i} direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+          <Stack key={i} direction="row" spacing={1} alignItems="center">
+            <ImagePreview src={url} />
             <TextField
               label={`Image URL ${i + 1}`}
               value={url}
               onChange={(e) => setImage(i, e.target.value)}
               fullWidth
-              size="small"
               error={!!errors.galleryImages}
               inputProps={{ 'aria-label': `Gallery image URL ${i + 1}` }}
             />
@@ -193,70 +268,57 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
                 onClick={() => removeImage(i)}
                 aria-label={`Remove image ${i + 1}`}
                 size="small"
-                color="error"
+                sx={{
+                  color: 'error.main',
+                  border: '1px solid #fca5a5',
+                  borderRadius: 1.5,
+                  p: 0.6,
+                  flexShrink: 0,
+                  '&:hover': { bgcolor: 'rgba(239,68,68,0.06)' },
+                }}
               >
-                <DeleteIcon fontSize="small" />
+                <DeleteOutlinedIcon sx={{ fontSize: 16 }} />
               </IconButton>
             )}
           </Stack>
         ))}
-        {errors.galleryImages && (
-          <Typography variant="caption" color="error">
-            {errors.galleryImages}
-          </Typography>
-        )}
-        <Button
-          startIcon={<AddIcon />}
-          onClick={addImage}
-          size="small"
-          sx={{ mt: 0.5 }}
-        >
-          Add image URL
-        </Button>
-      </Box>
-
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 1 }}>
-        <TextField
-          label="Price"
-          name="price"
-          type="number"
-          value={fields.price}
-          onChange={(e) => set('price', e.target.value)}
-          fullWidth
-          required
-          margin="normal"
-          error={!!errors.price}
-          helperText={errors.price}
-          inputProps={{ min: 0, step: 'any', 'aria-label': 'Price' }}
-        />
-        <TextField
-          label="Discounted Price"
-          name="discountedPrice"
-          type="number"
-          value={fields.discountedPrice}
-          onChange={(e) => set('discountedPrice', e.target.value)}
-          fullWidth
-          margin="normal"
-          error={!!errors.discountedPrice}
-          helperText={errors.discountedPrice || 'Optional'}
-          inputProps={{ min: 0, step: 'any', 'aria-label': 'Discounted price' }}
-        />
       </Stack>
+      {errors.galleryImages && (
+        <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1 }}>
+          {errors.galleryImages}
+        </Typography>
+      )}
+      <Button
+        startIcon={<AddIcon />}
+        onClick={addImage}
+        size="small"
+        variant="outlined"
+        sx={{ mb: 3 }}
+      >
+        Add image URL
+      </Button>
 
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Description */}
+      <SectionHeading>Description</SectionHeading>
       <RichTextEditor
         value={fields.description}
         onChange={(html) => set('description', html)}
         error={errors.description}
       />
 
-      <Button
-        type="submit"
-        variant="contained"
-        disabled={submitting}
-        sx={{ mt: 3, py: 1.2, minWidth: 140 }}
-      >
-        {submitting ? <CircularProgress size={22} color="inherit" /> : submitLabel}
-      </Button>
+      {/* Actions */}
+      <Stack direction="row" justifyContent="flex-end" spacing={1.5} sx={{ mt: 4 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={submitting}
+          sx={{ py: 1.1, px: 4, minWidth: 160 }}
+        >
+          {submitting ? <CircularProgress size={20} color="inherit" /> : submitLabel}
+        </Button>
+      </Stack>
     </Box>
   );
 }

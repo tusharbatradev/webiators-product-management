@@ -1,10 +1,5 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const fs = require('fs');
-const path = require('path');
+// globalSetup runs in an isolated context in Jest 30.
+// MongoMemoryServer lifecycle is handled in setup.js (setupFilesAfterEnv)
+// so it runs in the same worker process as the tests.
+module.exports = async () => {};
 
-module.exports = async () => {
-  const mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
-  global.__MONGOD__ = mongod;
-  fs.writeFileSync(path.join(__dirname, '.mongo-test-uri'), uri);
-};

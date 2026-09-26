@@ -8,6 +8,7 @@ import ProductsPage from '../pages/ProductsPage';
 import AddProductPage from '../pages/AddProductPage';
 import EditProductPage from '../pages/EditProductPage';
 import ProductDetailPage from '../pages/ProductDetailPage';
+import ProfilePage from '../pages/ProfilePage';
 import NotFoundPage from '../pages/NotFoundPage';
 
 export default function AppRoutes() {
@@ -31,6 +32,7 @@ export default function AppRoutes() {
         <Route path="/products/new" element={<AddProductPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/products/:id/edit" element={<EditProductPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
       {/* Default redirect */}

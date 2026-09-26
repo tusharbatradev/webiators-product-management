@@ -5,14 +5,19 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
+    "start:e2e": "node src/server.e2e.js",
     "test": "jest --runInBand --forceExit"
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
     "globalSetup": "<rootDir>/tests/globalSetup.js",
     "globalTeardown": "<rootDir>/tests/globalTeardown.js",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "testTimeout": 30000
   },
   "keywords": [],
@@ -31,7 +36,7 @@
   },
   "devDependencies": {
     "jest": "^30.5.2",
-    "mongodb-memory-server": "^11.3.0",
+    "mongodb-memory-server": "^10.4.3",
     "nodemon": "^3.1.14",
     "supertest": "^7.3.0"
   }

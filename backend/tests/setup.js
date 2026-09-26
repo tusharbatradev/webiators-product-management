@@ -1,15 +1,18 @@
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
+
+let mongod;
 
 beforeAll(async () => {
   process.env.JWT_SECRET = 'test_jwt_secret_key';
-  const uri = fs.readFileSync(path.join(__dirname, '.mongo-test-uri'), 'utf-8');
+  mongod = await MongoMemoryServer.create();
+  const uri = mongod.getUri();
   await mongoose.connect(uri);
-});
+}, 60_000);
 
 afterAll(async () => {
   await mongoose.disconnect();
+  await mongod.stop();
 });
 
 afterEach(async () => {

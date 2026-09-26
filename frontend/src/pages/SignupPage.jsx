@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import {
   Box, Paper, Typography, TextField, Button,
-  Alert, CircularProgress, Link,
+  Alert, CircularProgress, Link, InputAdornment, IconButton, Divider,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useAuth } from '../context/AuthContext';
 
 function extractError(err) {
@@ -18,6 +22,7 @@ export default function SignupPage() {
   const { signup } = useAuth();
 
   const [form, setForm] = useState({ username: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -34,7 +39,6 @@ export default function SignupPage() {
     setSubmitting(true);
     try {
       await signup(form);
-      // AuthContext.signup navigates to /login on success
     } catch (err) {
       setError(extractError(err));
     } finally {
@@ -44,15 +48,18 @@ export default function SignupPage() {
 
   return (
     <Paper
-      elevation={3}
-      sx={{ p: { xs: 3, sm: 4 }, width: '100%', maxWidth: 400, mx: 'auto' }}
+      elevation={2}
+      sx={{ p: { xs: 3, sm: 4 }, borderRadius: 3 }}
     >
-      <Typography variant="h5" component="h1" gutterBottom fontWeight={600}>
+      <Typography variant="h5" fontWeight={700} gutterBottom sx={{ mb: 0.5 }}>
         Create account
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Get started with product management
       </Typography>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} role="alert">
+        <Alert severity="error" sx={{ mb: 2.5 }} role="alert">
           {error}
         </Alert>
       )}
@@ -68,37 +75,72 @@ export default function SignupPage() {
           required
           autoComplete="username"
           autoFocus
-          margin="normal"
-          inputProps={{ 'aria-label': 'Username' }}
+          sx={{ mb: 2 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutlinedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                </InputAdornment>
+              ),
+            },
+            htmlInput: { 'aria-label': 'Username' },
+          }}
         />
         <TextField
           label="Password"
           name="password"
           id="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={form.password}
           onChange={handleChange}
           fullWidth
           required
           autoComplete="new-password"
-          margin="normal"
-          inputProps={{ 'aria-label': 'Password' }}
+          sx={{ mb: 2.5 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockOutlinedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword((v) => !v)}
+                    edge="end"
+                    size="small"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    sx={{ color: 'text.secondary' }}
+                  >
+                    {showPassword
+                      ? <VisibilityOffOutlinedIcon sx={{ fontSize: 18 }} />
+                      : <VisibilityOutlinedIcon sx={{ fontSize: 18 }} />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+            htmlInput: { 'aria-label': 'Password' },
+          }}
         />
         <Button
           type="submit"
           variant="contained"
           fullWidth
           disabled={submitting}
-          sx={{ mt: 2, py: 1.2 }}
+          sx={{ py: 1.2, fontSize: '0.9rem' }}
         >
-          {submitting ? <CircularProgress size={22} color="inherit" /> : 'Create account'}
+          {submitting ? <CircularProgress size={20} color="inherit" /> : 'Create account'}
         </Button>
       </Box>
 
-      <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+      <Divider sx={{ my: 2.5 }} />
+
+      <Typography variant="body2" align="center" color="text.secondary">
         Already have an account?{' '}
-        <Link component={RouterLink} to="/login">
-          Log in
+        <Link component={RouterLink} to="/login" fontWeight={600} underline="hover">
+          Sign in
         </Link>
       </Typography>
     </Paper>

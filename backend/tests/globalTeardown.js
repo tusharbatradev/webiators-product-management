@@ -1,10 +1,3 @@
-const fs = require('fs');
-const path = require('path');
+// globalTeardown — MongoMemoryServer is stopped in setup.js afterAll.
+module.exports = async () => {};
 
-module.exports = async () => {
-  if (global.__MONGOD__) {
-    await global.__MONGOD__.stop();
-  }
-  const uriFile = path.join(__dirname, '.mongo-test-uri');
-  if (fs.existsSync(uriFile)) fs.unlinkSync(uriFile);
-};

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate, useParams, Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, CircularProgress, Alert, Paper, Breadcrumbs, Link } from '@mui/material';
 import ProductForm from '../components/ProductForm';
 import * as productService from '../services/productService';
 
@@ -29,7 +28,7 @@ export default function EditProductPage() {
 
   const handleSubmit = async (payload) => {
     await productService.updateProduct(id, payload);
-    navigate(`/products/${id}`, { replace: true });
+    navigate(`/products/${id}`, { replace: true, state: { snackbar: 'Product updated successfully.' } });
   };
 
   if (loading) {
@@ -41,26 +40,33 @@ export default function EditProductPage() {
   }
 
   return (
-    <Box maxWidth={720} mx="auto">
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate(`/products/${id}`)}
-        sx={{ mb: 2 }}
-      >
-        Back to Product
-      </Button>
-      <Typography variant="h5" component="h1" fontWeight={600} gutterBottom>
-        Edit Product
-      </Typography>
+    <Box maxWidth={800} mx="auto">
+      <Breadcrumbs sx={{ mb: 2 }}>
+        <Link component={RouterLink} to="/products" underline="hover" color="text.secondary" variant="body2">
+          Products
+        </Link>
+        <Link
+          component={RouterLink}
+          to={`/products/${id}`}
+          underline="hover"
+          color="text.secondary"
+          variant="body2"
+        >
+          {product?.productName || 'Product'}
+        </Link>
+        <Typography variant="body2" color="text.primary">Edit</Typography>
+      </Breadcrumbs>
 
       {error ? (
         <Alert severity="error">{error}</Alert>
       ) : (
-        <ProductForm
-          initialValues={product}
-          onSubmit={handleSubmit}
-          submitLabel="Save Changes"
-        />
+        <Paper elevation={1} sx={{ p: { xs: 2.5, sm: 3.5 } }}>
+          <ProductForm
+            initialValues={product}
+            onSubmit={handleSubmit}
+            submitLabel="Save Changes"
+          />
+        </Paper>
       )}
     </Box>
   );
