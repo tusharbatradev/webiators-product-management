@@ -6,7 +6,7 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 
 ## Current Status
 
-Backend foundation and MongoDB database connection are set up. Authentication and product functionality are not yet implemented.
+Backend foundation, MongoDB database connection, and JWT user authentication are set up. Product functionality is not yet implemented.
 
 ## Tech Stack
 
@@ -20,8 +20,11 @@ Backend foundation and MongoDB database connection are set up. Authentication an
 - MongoDB (database)
 - Mongoose (MongoDB interaction)
 
-**Backend (planned)**
+- bcryptjs (password hashing)
 - JSON Web Tokens (JWT)
+
+**Backend (planned)**
+- Product CRUD
 
 **Frontend (planned)**
 - React (Vite)
@@ -106,6 +109,36 @@ Response:
 {
   "success": true,
   "message": "API is running"
+}
+```
+
+### Authentication
+
+Passwords are hashed with bcrypt. Authentication uses JWT (Bearer token, 7-day expiry).
+
+```
+POST /api/auth/signup
+POST /api/auth/login
+GET  /api/auth/me        (protected — requires Authorization: Bearer <token>)
+```
+
+Signup response:
+
+```json
+{
+  "success": true,
+  "message": "User registered successfully",
+  "data": { "user": { "id": "...", "username": "..." } }
+}
+```
+
+Login response:
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": { "token": "...", "user": { "id": "...", "username": "..." } }
 }
 ```
 
