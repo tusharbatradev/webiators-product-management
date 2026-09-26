@@ -21,7 +21,7 @@ function extractError(err) {
 export default function SignupPage() {
   const { signup } = useAuth();
 
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ name: '', username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -31,8 +31,8 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.username || !form.password) {
-      setError('Username and password are required.');
+    if (!form.name || !form.username || !form.password) {
+      setError('All fields are required.');
       return;
     }
     setError('');
@@ -66,6 +66,28 @@ export default function SignupPage() {
 
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
+          label="Full Name"
+          name="name"
+          id="name"
+          value={form.name}
+          onChange={handleChange}
+          fullWidth
+          required
+          autoComplete="name"
+          autoFocus
+          sx={{ mb: 2 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutlinedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                </InputAdornment>
+              ),
+            },
+            htmlInput: { 'aria-label': 'Full Name' },
+          }}
+        />
+        <TextField
           label="Username"
           name="username"
           id="username"
@@ -74,7 +96,6 @@ export default function SignupPage() {
           fullWidth
           required
           autoComplete="username"
-          autoFocus
           sx={{ mb: 2 }}
           slotProps={{
             input: {

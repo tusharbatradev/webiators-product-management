@@ -64,12 +64,15 @@ export default function ProfilePage() {
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
               }}
             >
-              {user?.username?.[0]?.toUpperCase() || 'U'}
+              {user?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || 'U'}
             </Avatar>
           </Box>
 
           <Typography variant="h6" fontWeight={700}>
-            {user?.username || 'User'}
+            {user?.name || user?.username || 'User'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+            @{user?.username}
           </Typography>
           <Stack direction="row" spacing={1} mt={0.5}>
             <Chip
@@ -86,6 +89,11 @@ export default function ProfilePage() {
             Account Details
           </Typography>
 
+          <InfoRow
+            icon={<PersonOutlinedIcon fontSize="small" />}
+            label="Full Name"
+            value={user?.name || '—'}
+          />
           <InfoRow
             icon={<PersonOutlinedIcon fontSize="small" />}
             label="Username"

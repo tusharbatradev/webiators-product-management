@@ -6,7 +6,7 @@ const signup = async (req, res) => {
   const error = validateSignup(req.body);
   if (error) return res.status(400).json({ success: false, message: error });
 
-  const { username, password } = req.body;
+  const { username, password, name } = req.body;
 
   try {
     const existing = await User.findOne({ username: username.trim() });
@@ -14,12 +14,12 @@ const signup = async (req, res) => {
       return res.status(409).json({ success: false, message: 'Username already taken' });
     }
 
-    const user = await User.create({ username: username.trim(), password });
+    const user = await User.create({ username: username.trim(), name: name.trim(), password });
 
     return res.status(201).json({
       success: true,
       message: 'User registered successfully',
-      data: { user: { id: user._id, username: user.username } },
+      data: { user: { id: user._id, username: user.username, name: user.name } },
     });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -48,7 +48,7 @@ const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Login successful',
-      data: { token, user: { id: user._id, username: user.username } },
+      data: { token, user: { id: user._id, username: user.username, name: user.name } },
     });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -64,7 +64,7 @@ const getCurrentUser = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: { user: { id: user._id, username: user.username } },
+      data: { user: { id: user._id, username: user.username, name: user.name } },
     });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Server error' });

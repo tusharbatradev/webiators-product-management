@@ -1,4 +1,10 @@
-const validateSignup = ({ username, password }) => {
+const validateSignup = ({ username, password, name }) => {
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return 'Name is required';
+  }
+  if (name.trim().length < 2 || name.trim().length > 50) {
+    return 'Name must be between 2 and 50 characters';
+  }
   if (!username || typeof username !== 'string' || username.trim() === '') {
     return 'Username is required';
   }
