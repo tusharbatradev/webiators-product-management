@@ -3,7 +3,7 @@ const Product = require('../models/Product');
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
   try {
     const product = await Product.create(req.body);
     return res.status(201).json({
@@ -12,27 +12,20 @@ const createProduct = async (req, res) => {
       data: { product },
     });
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ success: false, message: 'Product slug already exists' });
-    }
-    if (err.name === 'ValidationError') {
-      const message = Object.values(err.errors)[0].message;
-      return res.status(400).json({ success: false, message });
-    }
-    return res.status(500).json({ success: false, message: 'Server error' });
+    next(err);
   }
 };
 
-const getProducts = async (req, res) => {
+const getProducts = async (req, res, next) => {
   try {
     const products = await Product.find();
     return res.status(200).json({ success: true, data: { products } });
-  } catch {
-    return res.status(500).json({ success: false, message: 'Server error' });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getProductById = async (req, res) => {
+const getProductById = async (req, res, next) => {
   if (!isValidId(req.params.id)) {
     return res.status(400).json({ success: false, message: 'Invalid product ID' });
   }
@@ -42,12 +35,12 @@ const getProductById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
     return res.status(200).json({ success: true, data: { product } });
-  } catch {
-    return res.status(500).json({ success: false, message: 'Server error' });
+  } catch (err) {
+    next(err);
   }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
   if (!isValidId(req.params.id)) {
     return res.status(400).json({ success: false, message: 'Invalid product ID' });
   }
@@ -65,18 +58,11 @@ const updateProduct = async (req, res) => {
       data: { product },
     });
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ success: false, message: 'Product slug already exists' });
-    }
-    if (err.name === 'ValidationError') {
-      const message = Object.values(err.errors)[0].message;
-      return res.status(400).json({ success: false, message });
-    }
-    return res.status(500).json({ success: false, message: 'Server error' });
+    next(err);
   }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
   if (!isValidId(req.params.id)) {
     return res.status(400).json({ success: false, message: 'Invalid product ID' });
   }
@@ -86,8 +72,8 @@ const deleteProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
     return res.status(200).json({ success: true, message: 'Product deleted successfully' });
-  } catch {
-    return res.status(500).json({ success: false, message: 'Server error' });
+  } catch (err) {
+    next(err);
   }
 };
 

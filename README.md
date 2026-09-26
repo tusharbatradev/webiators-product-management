@@ -6,7 +6,7 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 
 ## Current Status
 
-Backend foundation, MongoDB database connection, JWT user authentication, and Product CRUD are implemented. Frontend is not yet implemented.
+Backend foundation, MongoDB database connection, JWT user authentication, and Product CRUD are implemented. Backend validation and security are implemented. Frontend is not yet implemented.
 
 ## Tech Stack
 
@@ -23,9 +23,13 @@ Backend foundation, MongoDB database connection, JWT user authentication, and Pr
 - bcryptjs (password hashing)
 - JSON Web Tokens (JWT)
 - Product CRUD
+- Joi (request validation)
+- Centralized error handling
+- Helmet (security headers)
+- CORS (restricted to CLIENT_URL)
 
 **Backend (planned)**
-- Backend validation + security
+- Frontend integration
 
 **Frontend (planned)**
 - React (Vite)
@@ -166,6 +170,27 @@ Create product body:
   "price": 999,
   "discountedPrice": 799,
   "description": "<p>Premium cotton t-shirt.</p>"
+}
+```
+
+Validation rules:
+- `metaTitle` — required, max 100 chars
+- `productName` — required, max 200 chars
+- `productSlug` — required, URL-friendly format (e.g. `premium-cotton-t-shirt`)
+- `galleryImages` — required array of valid URLs, min 1 item
+- `price` — required positive number
+- `discountedPrice` — optional positive number, must be less than price
+- `description` — required string
+
+Validation error response:
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": [
+    { "field": "productName", "message": "Product name is required" }
+  ]
 }
 ```
 

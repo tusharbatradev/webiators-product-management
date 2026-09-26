@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const authMiddleware = require('../middleware/authMiddleware');
+const validate = require('../middleware/validate');
+const { createProductSchema, updateProductSchema } = require('../validators/productValidator');
 const {
   createProduct,
   getProducts,
@@ -10,10 +12,10 @@ const {
 
 router.use(authMiddleware);
 
-router.post('/', createProduct);
+router.post('/', validate(createProductSchema), createProduct);
 router.get('/', getProducts);
 router.get('/:id', getProductById);
-router.put('/:id', updateProduct);
+router.put('/:id', validate(updateProductSchema), updateProduct);
 router.delete('/:id', deleteProduct);
 
 module.exports = router;
