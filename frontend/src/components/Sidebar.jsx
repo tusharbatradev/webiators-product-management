@@ -11,7 +11,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useAuth } from '../context/AuthContext';
 
-export const SIDEBAR_WIDTH = 240;
+export const SIDEBAR_WIDTH = 260;
 export const SIDEBAR_COLLAPSED_WIDTH = 72;
 
 const NAV_ITEMS = [
@@ -95,7 +95,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onClose }) {
                 noWrap
                 sx={{ lineHeight: 1.25, color: 'text.secondary', fontSize: '0.72rem' }}
               >
-                Product Mgmt
+                Product Management
               </Typography>
             </Box>
           </Box>
@@ -233,7 +233,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onClose }) {
                 flexShrink: 0,
               }}
             >
-              {user?.username?.[0]?.toUpperCase() || 'U'}
+              {user?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || 'U'}
             </Avatar>
             <Box sx={{ overflow: 'hidden', flex: 1, minWidth: 0 }}>
               <Typography
@@ -243,7 +243,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onClose }) {
                 display="block"
                 sx={{ lineHeight: 1.3, color: 'text.primary', fontSize: '0.8rem' }}
               >
-                {user?.username || 'User'}
+                {user?.name || user?.username || 'User'}
               </Typography>
               <Typography
                 variant="caption"
@@ -257,7 +257,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onClose }) {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 0.75 }}>
-            <Tooltip title={user?.username || 'User'} placement="right" arrow>
+            <Tooltip title={user?.name || user?.username || 'User'} placement="right" arrow>
               <Avatar
                 sx={{
                   width: 32,
@@ -267,7 +267,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onClose }) {
                   fontWeight: 700,
                 }}
               >
-                {user?.username?.[0]?.toUpperCase() || 'U'}
+                {user?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || 'U'}
               </Avatar>
             </Tooltip>
           </Box>
