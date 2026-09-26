@@ -6,8 +6,26 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
+import DOMPurify from 'dompurify';
 import * as productService from '../services/productService';
 import ProductImageGallery from '../components/ProductImageGallery';
+
+// Sanitize HTML and make external links safe before rendering.
+function sanitizeHtml(html) {
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+    ADD_ATTR: ['target', 'rel'],
+  });
+}
+
+// After sanitization, force target="_blank" links to also carry rel="noopener noreferrer".
+function addLinkSafety(html) {
+  return html.replace(
+    /<a\s([^>]*target="_blank")[^>]*>/gi,
+    (match) =>
+      match.includes('rel=') ? match : match.replace('>', ' rel="noopener noreferrer">'),
+  );
+}
 
 function extractError(err) {
   const data = err?.response?.data;
@@ -106,9 +124,26 @@ export default function ProductDetailPage() {
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
           Description
         </Typography>
-        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-          {product.description}
-        </Typography>
+        <Box
+          sx={{
+            '& h2, & h3, & h4': { mt: 1.5, mb: 0.5, fontWeight: 600 },
+            '& p': { mt: 0, mb: 1 },
+            '& ul, & ol': { pl: 3, mb: 1 },
+            '& li': { mb: 0.25 },
+            '& blockquote': {
+              borderLeft: '4px solid',
+              borderColor: 'divider',
+              pl: 2,
+              ml: 0,
+              color: 'text.secondary',
+            },
+            '& a': { color: 'primary.main' },
+            '& strong': { fontWeight: 700 },
+          }}
+          dangerouslySetInnerHTML={{
+            __html: addLinkSafety(sanitizeHtml(product.description || '')),
+          }}
+        />
       </Paper>
     </Box>
   );

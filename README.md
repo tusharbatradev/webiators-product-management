@@ -50,9 +50,10 @@ Backend and frontend are fully implemented. Backend covers Express, MongoDB/Mong
 - Previous/Next image navigation
 - Image fallback handling
 - Client-side form validation
+- CKEditor 5 rich-text description editor
+- Sanitized HTML rendering on Product Detail
 
 **Frontend (planned)**
-- CKEditor 5 (rich-text description)
 - Image slider on product detail
 
 ## Project Structure

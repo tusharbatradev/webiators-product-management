@@ -5,9 +5,15 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RichTextEditor from './RichTextEditor';
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const URL_RE = /^https?:\/\/.+/;
+
+// Strip HTML tags and decode whitespace to check for meaningful text content.
+function hasText(html) {
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0;
+}
 
 function validate(fields) {
   const errors = {};
@@ -38,7 +44,7 @@ function validate(fields) {
       errors.discountedPrice = 'Discounted price must be less than the price.';
     }
   }
-  if (!fields.description.trim()) errors.description = 'Description is required.';
+  if (!hasText(fields.description)) errors.description = 'Description is required.';
   return errors;
 }
 
@@ -108,7 +114,7 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
         productSlug: fields.productSlug.trim(),
         galleryImages: fields.galleryImages.map((u) => u.trim()).filter(Boolean),
         price: parseFloat(fields.price),
-        description: fields.description.trim(),
+        description: fields.description, // HTML string from CKEditor — do not trim
       };
       if (fields.discountedPrice !== '') {
         payload.discountedPrice = parseFloat(fields.discountedPrice);
@@ -237,18 +243,10 @@ export default function ProductForm({ initialValues, onSubmit, submitLabel = 'Sa
         />
       </Stack>
 
-      <TextField
-        label="Description"
-        name="description"
+      <RichTextEditor
         value={fields.description}
-        onChange={(e) => set('description', e.target.value)}
-        fullWidth
-        required
-        multiline
-        minRows={4}
-        margin="normal"
-        error={!!errors.description}
-        helperText={errors.description}
+        onChange={(html) => set('description', html)}
+        error={errors.description}
       />
 
       <Button
