@@ -6,7 +6,7 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 
 ## Current Status
 
-Backend foundation is set up. MongoDB, authentication, and product functionality are not yet implemented.
+Backend foundation and MongoDB database connection are set up. Authentication and product functionality are not yet implemented.
 
 ## Tech Stack
 
@@ -17,9 +17,10 @@ Backend foundation is set up. MongoDB, authentication, and product functionality
 - CORS
 - Helmet
 - Nodemon (dev)
+- MongoDB (database)
+- Mongoose (MongoDB interaction)
 
 **Backend (planned)**
-- MongoDB + Mongoose
 - JSON Web Tokens (JWT)
 
 **Frontend (planned)**
@@ -81,6 +82,8 @@ MONGO_URI=
 JWT_SECRET=
 CLIENT_URL=
 ```
+
+`MONGO_URI` must be a valid MongoDB Atlas connection string. The application connects to MongoDB before starting Express. Never commit real credentials.
 
 ## Running the Backend
 
