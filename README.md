@@ -1,31 +1,28 @@
 # Webiators Product Management
 
-> Project initialization is in progress.
-
 ## Overview
 
-A full-stack product management application built with the MERN stack (MongoDB, Express, React, Node.js). This application provides secure user authentication and complete product management capabilities.
+A full-stack product management application built with the MERN stack (MongoDB, Express, React, Node.js). This application will provide secure user authentication and complete product management capabilities.
 
-## Features
+## Current Status
 
-- User authentication (signup / login)
-- JWT-based session management
-- Product CRUD operations
-- Rich text description editor (CKEditor)
-- Product image slider
-- Form validation
-- Protected routes
+Backend foundation is set up. MongoDB, authentication, and product functionality are not yet implemented.
 
 ## Tech Stack
 
-**Backend**
+**Backend (implemented)**
 - Node.js
-- Express
+- Express.js
+- dotenv
+- CORS
+- Helmet
+- Nodemon (dev)
+
+**Backend (planned)**
 - MongoDB + Mongoose
 - JSON Web Tokens (JWT)
-- Helmet
 
-**Frontend**
+**Frontend (planned)**
 - React (Vite)
 - React Router
 - Axios
@@ -37,6 +34,18 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 ```
 webiators-product-management/
 ├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── validators/
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── .env
+│   ├── .env.example
+│   └── package.json
 ├── frontend/
 ├── docs/
 │   └── screenshots/
@@ -49,7 +58,6 @@ webiators-product-management/
 
 - Node.js >= 18
 - npm >= 9
-- MongoDB (local or Atlas)
 
 ## Installation
 
@@ -61,58 +69,42 @@ cd webiators-product-management
 # Install backend dependencies
 cd backend
 npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
 ```
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the required values:
+Copy `backend/.env.example` to `backend/.env` and fill in the required values:
 
 ```
 PORT=5000
-MONGO_URI=<your-mongodb-connection-string>
-JWT_SECRET=<your-jwt-secret>
-CLIENT_URL=<your-frontend-url>
+MONGO_URI=
+JWT_SECRET=
+CLIENT_URL=
 ```
 
-## Running the Project
+## Running the Backend
 
 ```bash
-# Start backend
 cd backend
-npm run dev
-
-# Start frontend (separate terminal)
-cd frontend
 npm run dev
 ```
 
-## Authentication
+## API Endpoints
 
-Details to be documented after implementation.
+### Health Check
 
-## Product Management
+```
+GET /api/health
+```
 
-Details to be documented after implementation.
+Response:
 
-## Validation
-
-Details to be documented after implementation.
-
-## Security
-
-Details to be documented after implementation.
-
-## Testing
-
-Details to be documented after implementation.
-
-## Screenshots
-
-Screenshots will be added after the frontend is completed.
+```json
+{
+  "success": true,
+  "message": "API is running"
+}
+```
 
 ## Git Commit Convention
 
