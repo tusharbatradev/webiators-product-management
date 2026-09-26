@@ -6,7 +6,7 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 
 ## Current Status
 
-Backend foundation, MongoDB database connection, JWT user authentication, and Product CRUD are implemented. Backend validation and security are implemented. React frontend foundation is set up with routing and MUI.
+Backend and frontend are fully implemented. Backend covers Express, MongoDB/Mongoose, JWT authentication, Product CRUD, Joi validation, Helmet, CORS, and centralized error handling. Frontend covers authentication (signup, login, logout, protected routes, JWT persistence) and full product management (list, add, edit, delete, detail).
 
 ## Tech Stack
 
@@ -29,18 +29,28 @@ Backend foundation, MongoDB database connection, JWT user authentication, and Pr
 - CORS (restricted to CLIENT_URL)
 
 **Backend (planned)**
-- Frontend integration
+- *(none — fully implemented)*
 
 **Frontend (implemented)**
 - React (Vite)
 - React Router
-- Axios
+- Axios (with JWT interceptor)
 - Material UI (MUI)
+- MUI Icons
+- Authentication (signup, login, logout)
+- JWT storage and persistence
+- Protected routes
+- Auth context
+- Product listing
+- Add product
+- Edit product
+- Delete product (with confirmation)
+- Product detail
+- Client-side form validation
 
 **Frontend (planned)**
-- Authentication UI
-- Product management UI
-- CKEditor 5
+- CKEditor 5 (rich-text description)
+- Image slider on product detail
 
 ## Project Structure
 
@@ -61,15 +71,17 @@ webiators-product-management/
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── utils/
+│   │   ├── components/   # Navbar, ProductForm, ConfirmDialog
+│   │   ├── context/      # AuthContext
+│   │   ├── layouts/      # AuthLayout, MainLayout
+│   │   ├── pages/        # Login, Signup, Products, Add, Edit, Detail, NotFound
+│   │   ├── routes/       # AppRoutes, ProtectedRoute
+│   │   ├── services/     # api.js, authService.js, productService.js
+│   │   ├── utils/        # auth.js (token helpers)
 │   │   ├── App.jsx
 │   │   ├── main.jsx
 │   │   └── theme.js
+│   ├── .env
 │   ├── .env.example
 │   ├── index.html
 │   ├── package.json
@@ -229,6 +241,36 @@ Validation error response:
   ]
 }
 ```
+
+## Authentication
+
+The frontend uses JWT-based authentication backed by the Express API.
+
+- Signup creates an account and redirects to `/login`.
+- Login stores the JWT in `localStorage` under the key `authToken` and redirects to `/products`.
+- On every page load, `AuthContext` reads the stored token and calls `GET /api/auth/me` to restore the session.
+- If the token is invalid or expired it is removed and the user is treated as unauthenticated.
+- Logout removes the token, clears the user state, and redirects to `/login`.
+- All product routes are protected — unauthenticated access redirects to `/login`.
+- The Axios instance automatically attaches `Authorization: Bearer <token>` via a request interceptor.
+
+## Product Management
+
+| Feature | Route |
+|---|---|
+| Product list | `/products` |
+| Add product | `/products/new` |
+| Product detail | `/products/:id` |
+| Edit product | `/products/:id/edit` |
+
+- All product routes require authentication.
+- The product list shows name, meta title, slug, price, discounted price, description preview, and the first gallery image.
+- Add and Edit share a single `ProductForm` component with client-side validation.
+- Delete shows a confirmation dialog before calling the API.
+- Successful creation redirects to the new product's detail page.
+- Successful edit redirects back to the product detail page.
+- Client-side validation mirrors backend rules: required fields, slug format, URL format for images, price/discounted-price relationship.
+- Backend validation errors are surfaced to the user in plain language.
 
 ## Git Commit Convention
 
