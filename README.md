@@ -6,7 +6,7 @@ A full-stack product management application built with the MERN stack (MongoDB, 
 
 ## Current Status
 
-Backend foundation, MongoDB database connection, JWT user authentication, and Product CRUD are implemented. Backend validation and security are implemented. Frontend is not yet implemented.
+Backend foundation, MongoDB database connection, JWT user authentication, and Product CRUD are implemented. Backend validation and security are implemented. React frontend foundation is set up with routing and MUI.
 
 ## Tech Stack
 
@@ -31,11 +31,15 @@ Backend foundation, MongoDB database connection, JWT user authentication, and Pr
 **Backend (planned)**
 - Frontend integration
 
-**Frontend (planned)**
+**Frontend (implemented)**
 - React (Vite)
 - React Router
 - Axios
 - Material UI (MUI)
+
+**Frontend (planned)**
+- Authentication UI
+- Product management UI
 - CKEditor 5
 
 ## Project Structure
@@ -56,6 +60,20 @@ webiators-product-management/
 │   ├── .env.example
 │   └── package.json
 ├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── theme.js
+│   ├── .env.example
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
 ├── docs/
 │   └── screenshots/
 ├── README.md
@@ -78,6 +96,9 @@ cd webiators-product-management
 # Install backend dependencies
 cd backend
 npm install
+# Install frontend dependencies
+cd ../frontend
+npm install
 ```
 
 ## Environment Variables
@@ -91,6 +112,12 @@ JWT_SECRET=
 CLIENT_URL=
 ```
 
+Copy `frontend/.env.example` to `frontend/.env`:
+
+```
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
 `MONGO_URI` must be a valid MongoDB Atlas connection string. The application connects to MongoDB before starting Express. Never commit real credentials.
 
 ## Running the Backend
@@ -99,6 +126,15 @@ CLIENT_URL=
 cd backend
 npm run dev
 ```
+
+## Running the Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Frontend runs on `http://localhost:5173` by default.
 
 ## API Endpoints
 
